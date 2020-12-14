@@ -4,10 +4,10 @@ import NavItem from '../NavItem/NavItem';
 
 const navBar = (props) => (
   <ul className={styleModule.NavBar}>
-    <NavItem link="/" active>
+    <NavItem link="/" exact>
       Burger Builder
     </NavItem>
-    <NavItem link="/">Check Out</NavItem>
+    <NavItem link="/orders">Orders</NavItem>
   </ul>
 );
 

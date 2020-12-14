@@ -4,11 +4,6 @@ import styleModule from './OrderSummary.module.scss';
 import Button from '../../UI/Button/Button';
 
 class OrderSummary extends React.Component {
-  // class-based component from compdidUp check
-  componentDidUpdate() {
-    console.log('[Order Summary] will update');
-  }
-
   render() {
     const ingredientSummary = Object.keys(this.props.ingredients).map(
       (ingredKey) => {

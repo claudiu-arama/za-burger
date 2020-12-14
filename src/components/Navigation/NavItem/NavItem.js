@@ -1,17 +1,18 @@
 import React from 'react';
 import styleModule from './NavItem.module.scss';
+import { NavLink } from 'react-router-dom';
 
 const navItem = (props) => {
   return (
     <li className={styleModule.NavItem}>
-      <a href={props.link} className={props.active ? styleModule.active : null}>
+      <NavLink
+        activeClassName={styleModule.active}
+        to={props.link}
+        exact={props.exact}>
         {props.children}
-      </a>
+      </NavLink>
     </li>
   );
 };
 
 export default navItem;
-
-
-
