@@ -11,6 +11,7 @@ const input = (props) => {
           className={styleModule.InputElement}
           {...props.elemConfig}
           value={props.value}
+          onChange={props.textInput}
         />
       );
       break;
@@ -20,7 +21,22 @@ const input = (props) => {
           className={styleModule.InputElement}
           {...props.elemConfig}
           value={props.value}
+          onChange={props.textInput}
         />
+      );
+      break;
+    case 'select':
+      inputElement = (
+        <select
+          className={styleModule.InputElement}
+          value={props.value}
+          onChange={props.textInput}>
+          {props.elemConfig.options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.displayValue}
+            </option>
+          ))}
+        </select>
       );
       break;
     default:
@@ -29,6 +45,7 @@ const input = (props) => {
           className={styleModule.InputElement}
           {...props.elemConfig}
           value={props.value}
+          onChange={props.textInput}
         />
       );
   }

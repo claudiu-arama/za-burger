@@ -30,7 +30,9 @@ class BurgerBuilder extends React.Component {
 
   componentDidMount() {
     axios
-      .get('https://burger-project-react-1ceb0.firebaseio.com/ingredients.json')
+      .get(
+        'https://burger-project-react-1ceb0.firebaseio.com/ingredients.json'
+      )
       .then((response) => {
         this.setState({ ingredients: response.data });
       })
@@ -60,7 +62,10 @@ class BurgerBuilder extends React.Component {
     const priceAddition = INGREDIENT_PRICES[type];
     const oldPrice = this.state.totalPrice;
     const newPrice = oldPrice + priceAddition;
-    this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
+    this.setState({
+      totalPrice: newPrice,
+      ingredients: updatedIngredients,
+    });
     this.updatePurchaseState(updatedIngredients);
   };
 
@@ -77,7 +82,10 @@ class BurgerBuilder extends React.Component {
     const oldPrice = this.state.totalPrice;
     const newPrice = oldPrice - priceDeduction;
 
-    this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
+    this.setState({
+      totalPrice: newPrice,
+      ingredients: updatedIngredients,
+    });
     this.updatePurchaseState(updatedIngredients);
   };
 

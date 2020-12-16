@@ -58,8 +58,8 @@ class ContactData extends React.Component {
         },
         value: '',
       },
-      isLoading: false,
     },
+    isLoading: false,
   };
   // handle the event object to prevent the default submit behaviour
   HandleOrderButton = (event) => {
@@ -76,6 +76,7 @@ class ContactData extends React.Component {
       .post('/orders.json', order)
       .then((response) => {
         this.setState({ isLoading: false });
+        // after the order is posted on the server, go back to root
         this.props.history.push('/');
       })
       .catch((error) => {
@@ -83,27 +84,30 @@ class ContactData extends React.Component {
       });
   };
 
+  HandleTextInput = (event) => {
+    console.log(event.target.value);
+  };
+
   render() {
+    // transform the state.orderForm object into an array
+    const formElemArray = [];
+    for (let key in this.state.orderForm) {
+      formElemArray.push({
+        id: key,
+        config: this.state.orderForm[key],
+      });
+    }
     let form = (
       <form>
-        <Input elemType="" elemConfig="" value="" />
-        <Input
-          inputtype="input"
-          type="email"
-          name="email"
-          placeholder="your email"
-        />
-        <Input
-          inputtype="input"
-          type="text"
-          name="street"
-          placeholder="your street"
-        />
-        <Input
-          type="text"
-          name="postal"
-          placeholder="your postal code"
-        />
+        {formElemArray.map((formElem) => (
+          <Input
+            elemType={formElem.config.elemType}
+            elemConfig={formElem.config.elemConfig}
+            value={formElem.config.value}
+            key={formElem.id}
+            textInput={this.HandleTextInput}
+          />
+        ))}
         <Button btnType="Success" clicked={this.HandleOrderButton}>
           ORDER!
         </Button>
