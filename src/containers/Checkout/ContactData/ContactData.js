@@ -61,16 +61,23 @@ class ContactData extends React.Component {
     },
     isLoading: false,
   };
-  // handle the event object to prevent the default submit behaviour
+
   HandleOrderButton = (event) => {
+    // handle the event object to prevent the default submit behaviour
     // stop the form from submitting
     event.preventDefault();
-    //  info is sent to the server
     this.setState({ isLoading: true });
+    // created key/value pairs - formData gets new properties (name, address..)
+    // values are the input values provided by the user
+    const formData = {};
+    for (let orderElem in this.state.orderForm) {
+      formData[orderElem] = this.state.orderForm[orderElem].value;
+    }
     const order = {
       ingredients: this.props.ingredients,
       // recalculate the price on the server, this is just practice
       price: this.props.price,
+      orderData: formData,
     };
     axios
       .post('/orders.json', order)
@@ -84,8 +91,20 @@ class ContactData extends React.Component {
       });
   };
 
-  HandleTextInput = (event) => {
-    console.log(event.target.value);
+  HandleTextInput = (event, inputId) => {
+    // deep clone of the state needed,
+    // create object of the state, and another object where we access the value of the inputId
+    const updatedFormData = {
+      ...this.state.orderForm,
+    };
+
+    const updatedFormElem = {
+      ...updatedFormData[inputId],
+    };
+
+    updatedFormElem.value = event.target.value;
+    updatedFormData[inputId] = updatedFormElem;
+    this.setState({ orderForm: updatedFormData });
   };
 
   render() {
@@ -98,14 +117,16 @@ class ContactData extends React.Component {
       });
     }
     let form = (
-      <form>
+      <form onSubmit={this.HandleOrderButton}>
         {formElemArray.map((formElem) => (
           <Input
             elemType={formElem.config.elemType}
             elemConfig={formElem.config.elemConfig}
             value={formElem.config.value}
             key={formElem.id}
-            textInput={this.HandleTextInput}
+            textInput={(event) =>
+              this.HandleTextInput(event, formElem.id)
+            }
           />
         ))}
         <Button btnType="Success" clicked={this.HandleOrderButton}>
