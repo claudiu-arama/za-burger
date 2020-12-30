@@ -15,6 +15,11 @@ class ContactData extends React.Component {
           placeholder: 'Your Name',
         },
         value: '',
+        validation: {
+          required: true,
+        },
+        valid: false,
+        touched: false,
       },
       street: {
         elemType: 'input',
@@ -23,6 +28,11 @@ class ContactData extends React.Component {
           placeholder: 'Street',
         },
         value: '',
+        validation: {
+          required: true,
+        },
+        valid: false,
+        touched: false,
       },
       zipCode: {
         elemType: 'input',
@@ -31,6 +41,13 @@ class ContactData extends React.Component {
           placeholder: 'ZIP Code',
         },
         value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5,
+        },
+        valid: false,
+        touched: false,
       },
       country: {
         elemType: 'input',
@@ -39,6 +56,11 @@ class ContactData extends React.Component {
           placeholder: 'Your Country',
         },
         value: '',
+        validation: {
+          required: true,
+        },
+        valid: false,
+        touched: false,
       },
       email: {
         elemType: 'input',
@@ -47,6 +69,11 @@ class ContactData extends React.Component {
           placeholder: 'Your e-Mail',
         },
         value: '',
+        validation: {
+          required: true,
+        },
+        valid: false,
+        touched: false,
       },
       deliveryMethod: {
         elemType: 'select',
@@ -56,11 +83,34 @@ class ContactData extends React.Component {
             { value: 'cheapest', displayValue: 'Cheapest' },
           ],
         },
-        value: '',
+        value: 'fastest',
+        validation: {},
+        valid: true,
       },
     },
     isLoading: false,
+    formIsValid: false,
   };
+
+  // fix validation flaw: isValid intial value 'true'
+  // and check isValid in every if check
+  checkValidity(value, rules) {
+    let isValid = true;
+
+    if (rules.required) {
+      isValid = value.trim() !== '' && isValid;
+    }
+
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+
+    return isValid;
+  }
 
   HandleOrderButton = (event) => {
     // handle the event object to prevent the default submit behaviour
@@ -92,8 +142,6 @@ class ContactData extends React.Component {
   };
 
   HandleTextInput = (event, inputId) => {
-    // deep clone of the state needed,
-    // create object of the state, and another object where we access the value of the inputId
     const updatedFormData = {
       ...this.state.orderForm,
     };
@@ -104,7 +152,27 @@ class ContactData extends React.Component {
 
     updatedFormElem.value = event.target.value;
     updatedFormData[inputId] = updatedFormElem;
-    this.setState({ orderForm: updatedFormData });
+
+    //  update valid property, call checkvalidity method
+    // method returns true/false
+    updatedFormElem.valid = this.checkValidity(
+      updatedFormElem.value,
+      updatedFormElem.validation
+    );
+    updatedFormElem.touched = true;
+
+    // check overall form validity
+    // loop through all inputId's and check validity && general validity
+    let formIsValid = true;
+
+    for (let inputId in updatedFormData) {
+      formIsValid = updatedFormData[inputId].valid && formIsValid;
+    }
+
+    this.setState({
+      orderForm: updatedFormData,
+      formIsValid: formIsValid,
+    });
   };
 
   render() {
@@ -124,12 +192,15 @@ class ContactData extends React.Component {
             elemConfig={formElem.config.elemConfig}
             value={formElem.config.value}
             key={formElem.id}
+            inValid={!formElem.config.valid}
+            shouldValidate={formElem.config.validation}
+            touched={formElem.config.touched}
             textInput={(event) =>
               this.HandleTextInput(event, formElem.id)
             }
           />
         ))}
-        <Button btnType="Success" clicked={this.HandleOrderButton}>
+        <Button btnType="Success" disabled={!this.state.formIsValid}>
           ORDER!
         </Button>
       </form>

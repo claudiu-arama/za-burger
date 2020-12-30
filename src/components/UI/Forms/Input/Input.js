@@ -3,12 +3,26 @@ import styleModule from './Input.module.scss';
 
 const input = (props) => {
   let inputElement;
+  const inputClasses = [styleModule.InputElement];
+
+  if (props.inValid && props.shouldValidate && props.touched) {
+    inputClasses.push(styleModule.Invalid);
+  }
+
+  let validationError = null;
+  if (props.inValid && props.touched) {
+    validationError = (
+      <p className={styleModule.ValidationError}>
+        Please enter a valid value!
+      </p>
+    );
+  }
 
   switch (props.elemType) {
     case 'input':
       inputElement = (
         <input
-          className={styleModule.InputElement}
+          className={inputClasses.join(' ')}
           {...props.elemConfig}
           value={props.value}
           onChange={props.textInput}
@@ -18,7 +32,7 @@ const input = (props) => {
     case 'textare':
       inputElement = (
         <textarea
-          className={styleModule.InputElement}
+          className={inputClasses.join(' ')}
           {...props.elemConfig}
           value={props.value}
           onChange={props.textInput}
@@ -28,7 +42,7 @@ const input = (props) => {
     case 'select':
       inputElement = (
         <select
-          className={styleModule.InputElement}
+          className={inputClasses.join(' ')}
           value={props.value}
           onChange={props.textInput}>
           {props.elemConfig.options.map((option) => (
@@ -42,7 +56,7 @@ const input = (props) => {
     default:
       inputElement = (
         <input
-          className={styleModule.InputElement}
+          className={inputClasses.join(' ')}
           {...props.elemConfig}
           value={props.value}
           onChange={props.textInput}
@@ -53,6 +67,7 @@ const input = (props) => {
     <div className={styleModule.Input}>
       <label className={styleModule.Label}>{props.label}</label>
       {inputElement}
+      {validationError}
     </div>
   );
 };
